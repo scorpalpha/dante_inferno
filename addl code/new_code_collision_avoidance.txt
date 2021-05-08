@@ -1,0 +1,76 @@
+int trig_left_fwd = 2;
+int trig_centr_fwd = 12;
+int trig_right_fwd = 11;
+int trig_back_left = 10;
+int trig_back_right = 9;
+int echo_left_fwd = 3;
+int echo_centre_fwd =7;
+int echo_right_fwd = 6; 
+int relay_pin1 = 2;
+int relay_pin2 = 3;
+int relay_pin3 = 4;
+int relay_pin4 = 5;
+void Stop()
+{
+  digitalWrite(relay_pin1,HIGH);
+ digitalWrite(relay_pin2,HIGH);
+ digitalWrite(relay_pin3,HIGH);
+ digitalWrite(relay_pin4,HIGH);
+}
+void right()
+{
+   digitalWrite(relay_pin1,LOW);
+    digitalWrite(relay_pin2,HIGH);
+}
+
+float get_ultrasonic_value(int TRIG_PIN,int ECHO_PIN)
+{
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);  
+
+  const unsigned long duration= pulseIn(ECHO_PIN, HIGH);
+  float distance= duration/29/2;
+  if(duration==0){
+    Serial.println("Warning: no pulse from sensor");
+  } else {
+    Serial.print("ultrasonic_value :");
+    
+    Serial.println(distance);
+    return distance; 
+  }
+  delay(100);
+}
+void fwd()
+{
+  digitalWrite(relay_pin3,LOW);
+    digitalWrite(relay_pin4,HIGH);
+}
+void setup() 
+{
+ Serial.begin(9600);
+ pinMode(relay_pin1,OUTPUT);
+ pinMode(relay_pin2,OUTPUT);
+ pinMode(relay_pin3,OUTPUT);
+ pinMode(relay_pin4,OUTPUT);
+ digitalWrite(relay_pin1,HIGH);
+ digitalWrite(relay_pin2,HIGH);
+ digitalWrite(relay_pin3,HIGH);
+ digitalWrite(relay_pin4,HIGH);
+  
+
+}
+
+void loop() 
+{ Serial.println(analogRead(A0));
+  if (analogRead(A0)>500 && analogRead(A0)<524)
+  {
+    if (get_ultrasonic_value(trig_left_fwd,echo_left_fwd) <= 20){Stop();}
+    else
+    {
+     fwd();
+    }
+  } 
+}
